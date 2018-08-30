@@ -40,6 +40,7 @@ namespace AhaTech.AngularTagHelpers
             if (!files.Any())
             {
                 output.SuppressOutput();
+                return;
             }
 
             output.TagName = "script-block";
