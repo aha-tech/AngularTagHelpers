@@ -8,7 +8,7 @@ To fix this, I've created these two tag helpers; one for CSS and one for JS. Jus
 
 The tag helpers are similar to the `Microsoft.AspNetCore.Mvc.TagHelpers.ScriptTagHelper` except they order the generated `<script>` tags.
 
-To use them, download the NuGet package [TODO], and in your razor page, import the tag helpers, like so:
+To use them, download the NuGet package (TODO), and in your razor page, import the tag helpers, like so:
 ```
 @addTagHelper *, AhaTech.AngularTagHelpers
 ```
@@ -16,6 +16,7 @@ To use them, download the NuGet package [TODO], and in your razor page, import t
 Then, add the `<angular-css-files src="...">` tag to the html header, and the  `<angular-js-files src="...">` tag to the body.
 
 When running `ng watch`, no CSS files will be generated, and so, the `<angular-css-files>` tag will not output anything.
+
 As I haven't figured out how to make a TagHelper that generates multiple, non-nested tags, the generated `<script>` tags are wrapped in a `<script-block>` tag, which shouldn't affect anything.
 
 ## Sample Index.cshtml
