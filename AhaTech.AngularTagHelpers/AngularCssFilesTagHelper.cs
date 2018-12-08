@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -33,14 +34,11 @@ namespace AhaTech.AngularTagHelpers
             var urlBuilder = new GlobbingUrlBuilder(_hostingEnvironment.WebRootFileProvider, _cache,
                 ViewContext.HttpContext.Request.PathBase);
 
-            var files = urlBuilder.BuildUrlList(null, Src + "/*.css", "");
+            var files = urlBuilder.BuildUrlList(null, Src + "/*.css", null);
 
-            if (files.Count > 1)
-            {
-                throw new ArgumentException($"Expected only one CSS file, found {files.Count}: {string.Join(", ", files)}");
-            }
+            var stylesheet = files.SingleOrDefault(f => Path.GetFileName(f).StartsWith("styles", StringComparison.OrdinalIgnoreCase));
 
-            if (!files.Any())
+            if (stylesheet == null)
             {
                 output.SuppressOutput();
                 return;
@@ -49,7 +47,7 @@ namespace AhaTech.AngularTagHelpers
             output.TagName = "link";
             output.Attributes.Clear();
             output.Attributes.Add("rel", "stylesheet");
-            output.Attributes.Add("href", files.First());
+            output.Attributes.Add("href", stylesheet);
 
         }
     }

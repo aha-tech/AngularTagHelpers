@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +35,7 @@ namespace AhaTech.AngularTagHelpers
             var urlBuilder = new GlobbingUrlBuilder(_hostingEnvironment.WebRootFileProvider, _cache,
                 ViewContext.HttpContext.Request.PathBase);
 
-            var files = urlBuilder.BuildUrlList(null, Src + "/*.js", "");
+            var files = urlBuilder.BuildUrlList(null, Src + "/*.js", null);
 
             files = OrderFiles(files).ToList();
             if (!files.Any())
@@ -50,7 +51,7 @@ namespace AhaTech.AngularTagHelpers
 
             foreach (var file in files)
             {
-                extraTags.AppendFormat("<script src='{0}'></script>", file);
+                extraTags.AppendFormat("<script src=\"{0}\"></script>", file);
             }
         }
 
@@ -59,25 +60,35 @@ namespace AhaTech.AngularTagHelpers
             var dictionary = files.ToDictionary(f =>
             {
                 var name = Path.GetFileName(f);
-                return name.Substring(0, name.IndexOf('.')).ToLowerInvariant();
+                var index = name.IndexOf(".", StringComparison.OrdinalIgnoreCase);
+                index = index > 0 ? index : name.Length;
+                return name.Substring(0, index).ToLowerInvariant();
             });
 
+            // ng build
+            // ng build --prod
             if (dictionary.TryGetValue("runtime", out var runtime))
             {
                 yield return runtime;
             }
+            // ng build
+            // ng build --prod
             if (dictionary.TryGetValue("polyfills", out var polyfills))
             {
                 yield return polyfills;
             }
+            // ng build
             if (dictionary.TryGetValue("styles", out var styles))
             {
                 yield return styles;
             }
+            // ng build
             if (dictionary.TryGetValue("vendor", out var vendor))
             {
                 yield return vendor;
             }
+            // ng build
+            // ng build --prod
             if (dictionary.TryGetValue("main", out var main))
             {
                 yield return main;
